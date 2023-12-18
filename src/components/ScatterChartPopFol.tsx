@@ -170,6 +170,7 @@ const ScatterChartPopFol = ({dataIn}:{dataIn:Artists[]}) => {
         beginAtZero:true,
         ticks:{
             color: 'white',
+            stepSize:10,
             font:{
                 family: 'Raleway',
                 size: 18,
@@ -187,7 +188,9 @@ const ScatterChartPopFol = ({dataIn}:{dataIn:Artists[]}) => {
                 size:22,
             },
             color: 'white',
-        }
+        },
+        min:0,
+        suggestedMax:100
       },
       
     },    
@@ -215,10 +218,11 @@ const ScatterChartPopFol = ({dataIn}:{dataIn:Artists[]}) => {
   };
   const style:Object = {
 
-    opacity: toolTipData.visible?1:0,
+    opacity: toolTipData.visible?0.9:0,
     position: "absolute",
     left: toolTipData.position.x,
     top: toolTipData.position.y,
+    backgroundColor: "#E5E4E2"
 
   }
   const render = (
@@ -241,7 +245,8 @@ const ScatterChartPopFol = ({dataIn}:{dataIn:Artists[]}) => {
   )
 
   return (
-    dataIn.length>0?render:<div></div>
+    // Only render if data is not 0
+    dataIn.length > 0 ? render:<div></div>
     
   );
 };

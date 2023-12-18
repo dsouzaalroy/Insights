@@ -59,8 +59,6 @@ function App() {
   const [api, setApi] = useState<SpotifyAPI>(new SpotifyAPI(accessToken));
 
 
-  // let api = new SpotifyAPI(accessToken);
-
   useEffect(() => {
     getAccessToken();
   }, []);
@@ -77,7 +75,6 @@ function App() {
   }, [api]);
 
   const initialise = async () =>{
-    // await setApi(new SpotifyAPI(accessToken))
     await getArtists();
     await getRecents();
   }
@@ -181,14 +178,6 @@ function App() {
 
   }
 
-  // const getArtistIds = (tracks:RecentTracks) =>{
-  //   let artists: string = "";
-  //   for(let i=0; i< tracks.items.length;i++){
-  //     artists+=tracks.items[i].track.artists[0].id;
-  //     if(i!==tracks.items.length-1)artists+=",";
-  //   }
-  //   return artists;
-  // }
   const getTopArtistIds = (tracks:ArtistTop) =>{
     let artists: string = "";
     for(let i=0; i< tracks.items.length;i++){
@@ -231,9 +220,6 @@ function App() {
             />
           </div>
         </div>
-
-
-
       </header>
     </div>
   );
