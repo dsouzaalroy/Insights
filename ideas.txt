@@ -1,0 +1,18 @@
+Correlation between what type of song U listen to based on the time of day
+What languages do you mostly listen to
+Female to male artist ratio
+Songs from artists compared to band
+
+How many include swear words
+Do you listen to more sad or happy songs
+
+Same ^ but with 50 mil
+Artists that you listen to have more than 10 mill monthly
+^ Doable but would need to query every artist individually as it doesn't provide the followers directly from getRecents
+
+
+Mood based on time #
+Top genre of the week month year #
+
+Possibly add recent to genre.
+    Would need to filter out duplicated artists.
