@@ -7,37 +7,31 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
-import CallbackPage from './components/Callback';
-import { HashRouter as Router, Route, HashRouter, Routes, BrowserRouter, Link} from 'react-router-dom';
-// import {
-//   createHashRouter,
-//   RouterProvider,
-// } from "react-router-dom";
+
+import { HashRouter, Routes, Route } from 'react-router-dom';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 
-// const router = createBrowserRouter([
-//   {
-//     path:"/",
-//     element: <App/>
-//   },
-//   {
-//     path:"/callback",
-//     element:<CallbackPage/>
-//   }
-// ])
+const router = createBrowserRouter([
+  {
+    path:"/",
+    element: <App/>
+  }
+],
+{
+  basename: process.env.PUBLIC_URL
+})
 
 root.render(
   <React.StrictMode>
-    {/* <RouterProvider router={router} /> */}
-    <HashRouter>
+    <RouterProvider router={router} />
+    {/* <HashRouter basename={process.env.PUBLIC_URL}>
       <Routes>
         <Route path="/" Component={App}/>
-        <Route path="/callback" Component={CallbackPage}/>
       </Routes>
-    </HashRouter>
+    </HashRouter> */}
   </React.StrictMode>
 );
 

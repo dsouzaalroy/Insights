@@ -143,16 +143,6 @@ function App() {
     setArtistsYear(newYear);
   }
 
-
-  async function getAvgValence(){
-    var totalValence : number = 0;
-
-    for(var i = 0; i< audioFeatures.length;i++){
-      totalValence += audioFeatures[i].valence;
-    }
-  }
-
-
   function getTempoValues(audioFeatures:AudioFeatures[], tracks: RecentTracks): Features {
     var totalTempo = audioFeatures[0].tempo;
     var highestTempo: SongTempo = {tempo:audioFeatures[0].tempo, tpHist: tracks.items[0]};
@@ -232,7 +222,6 @@ function App() {
         </button>
         <button onClick={getArtists}>Get Artists</button>
         <button onClick={getRecents}>Get Recent</button>
-        {/* <button onClick={getAvgValence}>Get Valence</button> */}
         <div className='flex flex-col '>
           <div className = "my-72">
             <Tempo 
