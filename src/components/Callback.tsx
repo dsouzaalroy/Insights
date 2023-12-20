@@ -6,12 +6,12 @@ function Callback() {
     const [token, setToken, removeToken] = useCookies(['access_token']);
 
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.hash.substring(1));
+    const urlParams = new URLSearchParams(window.location.hash.substring(2));
     const code = urlParams.get('access_token');
     const expirationDate = new Date();
     expirationDate.setTime(expirationDate.getTime() + 60 * 60 * 1000); // 1 hour in milliseconds
     if(code){
-        setToken('access_token',code, {path: '/', expires: expirationDate} )
+        setToken('access_token', code, {path: '/', expires: expirationDate} )
         window.location.href="http://localhost:3000/"
     }else{
         handleCodeRetrievalError();
