@@ -24,15 +24,20 @@ const router = createBrowserRouter([
   basename: process.env.PUBLIC_URL
 })
 
+// root.render(
+//   <React.StrictMode>
+//     <RouterProvider router={router} />
+//     <HashRouter basename={process.env.PUBLIC_URL}>
+//       <Routes>
+//         <Route path="/" Component={App}/>
+//       </Routes>
+//     </HashRouter>
+//   </React.StrictMode>
+// );
+
+// Non Strict
 root.render(
-  <React.StrictMode>
     <RouterProvider router={router} />
-    {/* <HashRouter basename={process.env.PUBLIC_URL}>
-      <Routes>
-        <Route path="/" Component={App}/>
-      </Routes>
-    </HashRouter> */}
-  </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function

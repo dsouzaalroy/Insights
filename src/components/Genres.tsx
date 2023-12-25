@@ -48,7 +48,6 @@ function Genres({week, month, year}:{week:ArtistTop, month: ArtistTop, year: Art
             }
         }
         const sortedArray = Array.from(map.entries()).sort((a, b) => b[1] - a[1]);
-        console.log(sortedArray);
         const num: number[] = [];
         const name: string[] = [];
         for(let i =0; i< sortedArray.length; i++){

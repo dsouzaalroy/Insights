@@ -22,7 +22,6 @@ const ScatterChartPopFol = ({dataIn}:{dataIn:Artists[]}) => {
     index:0,
   })
   useEffect(() =>{
-    console.log(dataIn);
     if(dataIn.length > 0){
     }
   }, [dataIn])

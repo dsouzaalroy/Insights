@@ -1,5 +1,105 @@
-// import { useHistory } from 'react-router-dom';
+import { useEffect, useState } from "react";
+import { TokenResponse } from "../interfaces/TokenResponse";
+import { useCookies } from "react-cookie";
+
 function Authenticator(){
+
+  const tokenEndpoint = "https://accounts.spotify.com/api/token";
+  const [cookies, setCookies] = useCookies(['access_token', 'refresh_token'])
+
+  const currentToken = {
+  
+    save: function (response: TokenResponse) {
+      const { access_token, refresh_token, expires_in } : {access_token : string, refresh_token : string, expires_in: number} = response;
+      setCookies('access_token', access_token, {maxAge: expires_in})
+      setCookies('refresh_token', refresh_token);
+    }
+  };
+  
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get('code');
+    
+    // TODO Add refresh token functionality
+    // if(cookies.refresh_token != undefined && cookies.access_token == undefined){
+    //    console.log("Inside")
+    //   const getLocalToken =async () => {
+    //     const token = await generateRefreshToken();
+    //     currentToken.save(token);
+    //     console.log(token)
+    //   }
+
+    //   getLocalToken();
+    // }
+    if(code && cookies.access_token == undefined){
+      const getLocalToken = async () => {
+        const token = await generateToken(code);
+        currentToken.save(token);
+        const url = new URL(window.location.href);
+        url.searchParams.delete("code");
+      
+        const updatedUrl = url.search ? url.href : url.href.replace('?', '');
+        window.history.replaceState({}, document.title, updatedUrl);
+      }
+      getLocalToken();
+    }
+
+    // getAccessToken();
+  });
+
+
+  // function getAccessToken(){
+  //   try{
+  //     if(!currentToken.access_token) throw Error;
+  //     setApi(new SpotifyAPI(currentToken.access_token || ""))
+  //     setIsLoggedIn(true);
+  //   }catch(e){
+  //     console.log(currentToken)
+  //     setIsLoggedIn(false)
+  //   }
+  // }
+
+  // TODO Add refresh token functionality
+  // const generateRefreshToken = async () =>{
+
+  //   const response = await fetch(tokenEndpoint, {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/x-www-form-urlencoded',
+  //     },
+
+  //     body: new URLSearchParams({
+  //       grant_type: 'refresh_token',
+  //       refresh_token: cookies.refresh_token,
+  //       client_id: process.env.REACT_APP_CLIENT_ID || "",
+  //     }).toString(),
+  //   });
+
+  //   return response.json();
+  // }
+
+
+  const generateToken = async (code:string) => {
+
+    let codeVerifier = localStorage.getItem('code_verifier');
+    const response = await fetch(tokenEndpoint, {
+      
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+
+      body: new URLSearchParams({
+        client_id: process.env.REACT_APP_CLIENT_ID || "",
+        grant_type: 'authorization_code',
+        code: code,
+        redirect_uri: process.env.REACT_APP_REDIRECT_URI || "",
+        code_verifier: codeVerifier || "",
+      }).toString(),
+    });
+    return response.json();
+  }
+
     const requestAuth = async () =>{
         const client_id = process.env.REACT_APP_CLIENT_ID || 'default_client_id'; 
         const redirect_uri = process.env.REACT_APP_REDIRECT_URI || 'default_redirect_uri';
@@ -22,7 +122,6 @@ function Authenticator(){
         url += '&code_challenge=' + encodeURIComponent(codeChallenge);
         url += '&code_challenge_method=' + encodeURIComponent('S256');
 
-        console.log(url);
         window.location.href = url;
     }
     const generateRandomString = (length:number) => {

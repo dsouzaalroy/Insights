@@ -16,28 +16,32 @@ import Authenticator from './components/Authenticator';
 import ArtistPopFol from './components/ArtistPopFol';
 import { Artists } from './interfaces/Artists';
 import { TokenResponse } from './interfaces/TokenResponse';
+import { useCookies } from 'react-cookie';
 
 function App() {
 
-  const currentToken = {
-    get access_token() { return localStorage.getItem('access_token') || null; },
-    get refresh_token() { return localStorage.getItem('refresh_token') || null; },
-    get expires_in() { return localStorage.getItem('refresh_in') || null },
-    get expires() { return localStorage.getItem('expires') || null },
-  
-    save: function (response: TokenResponse) {
-      const { access_token, refresh_token, expires_in } : {access_token : string, refresh_token : string, expires_in: number} = response;
-      localStorage.setItem('access_token', access_token);
-      localStorage.setItem('refresh_token', refresh_token);
-      localStorage.setItem('expires_in', expires_in.toString());
+  const [cookies, setCookies] = useCookies(['access_token', 'refresh_token'])
 
-      setIsLoggedIn(true);
+
+  // const currentToken = {
+  //   get access_token() { return localStorage.getItem('access_token') || null; },
+  //   get refresh_token() { return localStorage.getItem('refresh_token') || null; },
+  //   get expires_in() { return localStorage.getItem('refresh_in') || null },
+  //   get expires() { return localStorage.getItem('expires') || null },
   
-      const now = new Date();
-      const expiry = new Date(now.getTime() + (expires_in * 1000));
-      localStorage.setItem('expires', expiry.toDateString());
-    }
-  };
+  //   save: function (response: TokenResponse) {
+  //     const { access_token, refresh_token, expires_in } : {access_token : string, refresh_token : string, expires_in: number} = response;
+  //     localStorage.setItem('access_token', access_token);
+  //     localStorage.setItem('refresh_token', refresh_token);
+  //     localStorage.setItem('expires_in', expires_in.toString());
+
+  //     setIsLoggedIn(true);
+  
+  //     const now = new Date();
+  //     const expiry = new Date(now.getTime() + (expires_in * 1000));
+  //     localStorage.setItem('expires', expiry.toDateString());
+  //   }
+  // };
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [tracks, setTracks] = useState<RecentTracks>(
@@ -65,74 +69,87 @@ function App() {
   const [artistsWeek, setArtistsWeek] = useState<ArtistTop>(defaultArtistTop);
   const [artistsMonth, setArtistsMonth] = useState<ArtistTop>(defaultArtistTop);
   const [artistsYear, setArtistsYear] = useState<ArtistTop>(defaultArtistTop);
-  const [api, setApi] = useState<SpotifyAPI>(new SpotifyAPI(currentToken.access_token||""));
+  // const [api, setApi] = useState<SpotifyAPI>(new SpotifyAPI(currentToken.access_token||""));
+  const [api, setApi] = useState<SpotifyAPI>(new SpotifyAPI(cookies.access_token || ""));
+
 
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const code = urlParams.get('code');
-
-    if(code&&currentToken.access_token == undefined){
-      const getLocalToken = async () => {
-        const token = await getToken(code);
-        const expirationDate = new Date();
-        expirationDate.setTime(expirationDate.getTime() + 60 * 60 * 1000); // 1 hour in milliseconds
-        currentToken.save(token);
-        const url = new URL(window.location.href);
-        url.searchParams.delete("code");
-      
-        const updatedUrl = url.search ? url.href : url.href.replace('?', '');
-        window.history.replaceState({}, document.title, updatedUrl);
-      }
-      getLocalToken();
-    }
-
-    getAccessToken();
-  }, []);
-
-  useEffect(() => {
-    if(currentToken.access_token && api!==null){
-      initialise();
-    }
-  }, [api]);
-
-  const initialise = async () =>{
-    await getArtists();
-    await getRecents();
-  }
-
-  const getToken = async (code:any) => {
-
-    let codeVerifier = localStorage.getItem('code_verifier');
-    const tokenEndpoint = "https://accounts.spotify.com/api/token";
-
-    const response = await fetch(tokenEndpoint, {
-      
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-
-      body: new URLSearchParams({
-        client_id: process.env.REACT_APP_CLIENT_ID || "",
-        grant_type: 'authorization_code',
-        code: code,
-        redirect_uri: process.env.REACT_APP_REDIRECT_URI || "",
-        code_verifier: codeVerifier || "",
-      }).toString(),
-    });
-    return response.json();
-  }
-
-  function getAccessToken(){
-    try{
-      if(!currentToken.access_token) throw Error;
-      setApi(new SpotifyAPI(currentToken.access_token || ""))
+    console.log("Outside")
+    if(cookies.access_token!=undefined){
+      console.log("Inside")
+      setApi(new SpotifyAPI(cookies.access_token));
       setIsLoggedIn(true);
-    }catch(e){
-      console.log(currentToken)
-      setIsLoggedIn(false)
     }
-  }
+  }, [cookies])
+
+  // useEffect(() => {
+  //   const urlParams = new URLSearchParams(window.location.search);
+  //   const code = urlParams.get('code');
+
+  //   if(code&&currentToken.access_token == undefined){
+  //     const getLocalToken = async () => {
+  //       const token = await getToken(code);
+  //       console.log(token);
+  //       const expirationDate = new Date();
+  //       expirationDate.setTime(expirationDate.getTime() + 60 * 60 * 1000); // 1 hour in milliseconds
+  //       currentToken.save(token);
+  //       const url = new URL(window.location.href);
+  //       url.searchParams.delete("code");
+      
+  //       const updatedUrl = url.search ? url.href : url.href.replace('?', '');
+  //       window.history.replaceState({}, document.title, updatedUrl);
+  //     }
+  //     getLocalToken();
+  //   }
+
+  //   getAccessToken();
+  // }, []);
+
+  // useEffect(() => {
+  //   if(currentToken.access_token && api!==null){
+  //     const initialise = async () =>{
+  //       await getArtists();
+  //       await getRecents();
+  //     }
+  //     initialise();
+  //   }
+  // }, [api]);
+
+
+
+  // const getToken = async (code:any) => {
+
+  //   let codeVerifier = localStorage.getItem('code_verifier');
+  //   const tokenEndpoint = "https://accounts.spotify.com/api/token";
+
+  //   const response = await fetch(tokenEndpoint, {
+      
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/x-www-form-urlencoded',
+  //     },
+
+  //     body: new URLSearchParams({
+  //       client_id: process.env.REACT_APP_CLIENT_ID || "",
+  //       grant_type: 'authorization_code',
+  //       code: code,
+  //       redirect_uri: process.env.REACT_APP_REDIRECT_URI || "",
+  //       code_verifier: codeVerifier || "",
+  //     }).toString(),
+  //   });
+  //   return response.json();
+  // }
+
+  // function getAccessToken(){
+  //   try{
+  //     if(!currentToken.access_token) throw Error;
+  //     setApi(new SpotifyAPI(currentToken.access_token || ""))
+  //     setIsLoggedIn(true);
+  //   }catch(e){
+  //     console.log(currentToken)
+  //     setIsLoggedIn(false)
+  //   }
+  // }
 
   async function getArtists(){
     const newWeek = await api.getTopArtists("short_term");
