@@ -2,70 +2,34 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches:
-      - develop  # Change this to your main branch
+    branches: develop
   workflow_dispatch:
+
 jobs:
   build:
     runs-on: ubuntu-latest
-    name: Build jekyll
-    
+    name: Build react application
+
     env:
       REACT_APP_CLIENT_ID: ${{ secrets.REACT_APP_CLIENT_ID }}
       REACT_APP_REDIRECT_URI: ${{ secrets.REACT_APP_REDIRECT_URI }}
-      
+
     steps:
-    
-    - name: Checkout Repository
-      uses: actions/checkout@v2
-
-    - name: Build Jekyll for GitHub Pages
-      uses: actions/jekyll-build-pages@v1.0.9
-      # with:
-        # # Directory where the source files reside.
-        # source: # optional, default is ./
-        # # Output directory of the build. Although it can be nested inside the source, it cannot be the same as the source directory.
-        # destination: # optional, default is ./_site
-        # # Publishes posts with a future date. When set to true, the build is made with the --future option which overrides the future option that may be set in a Jekyll configuration file.
-        # future: # optional
-        # # The SHA-1 of the git commit for which the build is running. Default to GITHUB_SHA.
-        # build_revision: # optional, default is ${{ github.sha }}
-        # # Verbose output
-        # verbose: # optional, default is true
-        # # GitHub token
-        # token: # default is ${{ github.token }}
-
-    # - name: Install Dependencies
-    #   run: npm install
-
-    # - name: Build
-    #   run: CI=false npm run build
-    - name: Upload GitHub Pages artifact
-      uses: actions/upload-pages-artifact@v3.0.0
-      # with:
-      #   # Artifact name
-      #   name: # optional, default is github-pages
-      #   # Path of the directory containing the static assets.
-      #   path: # default is _site/
-      #   # Duration after which artifact will expire in days.
-      #   retention-days: # optional, default is 1
-  deploy:
-    runs-on: ubuntu-latest
-    name: Deploy to Pages
-    steps:
-    - name: Deploy GitHub Pages site
-      uses: actions/deploy-pages@v4.0.2
-      # with:
-        # # GitHub token
-        # token: # default is ${{ github.token }}
-        # # Time in milliseconds after which to timeout and cancel the deployment (default: 10 minutes)
-        # timeout: # optional, default is 600000
-        # # Maximum number of status report errors before cancelling a deployment (default: 10)
-        # error_count: # optional, default is 10
-        # # Time in milliseconds between two deployment status report (default: 5 seconds)
-        # reporting_interval: # optional, default is 5000
-        # # Name of the artifact to deploy
-        # artifact_name: # optional, default is github-pages
-        # # Is this attempting to deploy a pull request as a GitHub Pages preview site? (NOTE: This feature is only in alpha currently and is not available to the public!)
-        # preview: # optional, default is false
-                    
+    - uses: actions/checkout@v2
+    - name: UseNode.js 21
+      uses: actions/setup-node@v1
+      with:
+        node-version: 21
+    - run: npm ci
+    - run: CI=false npm run build --if-present
+    - name: Deploy
+      run: |
+        git config --global user.name $user_name
+        git config --global user.email $user_email
+        git remote set-url origin https://${github_token}@github.com/${repository}
+        npm run deploy
+      env:
+        user_name: 'github-actions[bot]'
+        user_email: 'github-actions[bot]@users.noreply.github.com'
+        github_token: ${{ secrets.ACTIONS_DEPLOY_ACCESS_TOKEN }}
+        repository: ${{ github.repository }}
