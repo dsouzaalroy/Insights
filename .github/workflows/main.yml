@@ -8,9 +8,14 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
+    env:
+      REACT_APP_CI: false
+      CI: false
+      REACT_APP_CLIENT_ID: ${{ secrets.REACT_APP_CLIENT_ID }}
+      REACT_APP_REDIRECT_URI: ${{ secrets.REACT_APP_REDIRECT_URI }}
+        
     steps:
     
     - name: Checkout
@@ -20,10 +25,6 @@ jobs:
       run: |
         npm install
         npm run-script build
-      env:
-        REACT_APP_CI: false
-        REACT_APP_CLIENT_ID: ${{ secrets.REACT_APP_CLIENT_ID }}
-        REACT_APP_REDIRECT_URI: ${{ secrets.REACT_APP_REDIRECT_URI }}
 
     - name: Deploy
       uses: JamesIves/github-pages-deploy-action@releases/v3
