@@ -5,6 +5,7 @@ import { useCookies } from "react-cookie";
 function Authenticator(){
 
   const tokenEndpoint = "https://accounts.spotify.com/api/token";
+  const redirect_uri = (process.env.NODE_ENV === 'production' ?  process.env.REACT_APP_REDIRECT_URI_PROD : process.env.REACT_APP_REDIRECT_URI_DEV) || 'invalid_redirect_uri'
   const [cookies, setCookies] = useCookies(['access_token', 'refresh_token'])
 
   const currentToken = {
@@ -93,7 +94,7 @@ function Authenticator(){
         client_id: process.env.REACT_APP_CLIENT_ID || "",
         grant_type: 'authorization_code',
         code: code,
-        redirect_uri: process.env.REACT_APP_REDIRECT_URI || "",
+        redirect_uri: redirect_uri || "",
         code_verifier: codeVerifier || "",
       }).toString(),
     });
@@ -101,11 +102,9 @@ function Authenticator(){
   }
 
     const requestAuth = async () =>{
-        console.log(process.env.REACT_APP_REDIRECT_URI)
-        console.log(process.env)
-
         const client_id = process.env.REACT_APP_CLIENT_ID || 'default_client_id'; 
-        const redirect_uri = process.env.REACT_APP_REDIRECT_URI || 'default_redirect_uri';
+// Use apiKey and baseUrl in your code as needed
+
         
         var state = generateRandomString(16);
 
