@@ -101,6 +101,9 @@ function Authenticator(){
   }
 
     const requestAuth = async () =>{
+        console.log(process.env.REACT_APP_REDIRECT_URI)
+        console.log(process.env)
+
         const client_id = process.env.REACT_APP_CLIENT_ID || 'default_client_id'; 
         const redirect_uri = process.env.REACT_APP_REDIRECT_URI || 'default_redirect_uri';
         
