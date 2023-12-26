@@ -7,7 +7,8 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
-import CallbackPage from './components/Callback';
+
+import { HashRouter, Routes, Route } from 'react-router-dom';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -17,16 +18,26 @@ const router = createBrowserRouter([
   {
     path:"/",
     element: <App/>
-  },
-  {
-    path:"/callback",
-    element:<CallbackPage/>
   }
-])
+],
+{
+  basename: process.env.PUBLIC_URL
+})
+
+// root.render(
+//   <React.StrictMode>
+//     <RouterProvider router={router} />
+//     <HashRouter basename={process.env.PUBLIC_URL}>
+//       <Routes>
+//         <Route path="/" Component={App}/>
+//       </Routes>
+//     </HashRouter>
+//   </React.StrictMode>
+// );
+
+// Non Strict
 root.render(
-  <React.StrictMode>
     <RouterProvider router={router} />
-  </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function

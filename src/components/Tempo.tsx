@@ -44,7 +44,7 @@ function Tempo({average, highest, lowest}: Features){
             <div className="p-5  flex flex-col border border-white rounded-2xl">
                 <div className="py-3 text-5xl font-bold text-white">{tempoNotation.name}.</div>
                 <div>
-                    <div className="text-base">You usually listen to songs from</div>
+                    <div className="text-base">You usually listen to songs</div>
                     <div className="pb-2 text-lg text-center font-bold">{tempoNotation.description}</div>
                     <div className="flex flex-col gap-2">
 

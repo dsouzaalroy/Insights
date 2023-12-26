@@ -1,17 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
 
-import logo from './logo.svg';
 import './App.css';
 import './output.css'
-import axios from 'axios';
 import { SpotifyAPI } from './components/SpotifyAPI';
-import { response } from 'express';
-import { Cookies, useCookies } from 'react-cookie';
 import { AudioFeatures } from './interfaces/AudioFeatures';
 import { TPHistory } from './interfaces/TrackPlayHistory';
 import { RecentTracks } from './interfaces/RecentTracks';
-import { Track } from './interfaces/Track';
 import Tempo from './components/Tempo'
 import { Features } from './interfaces/Features';
 import { SongTempo } from './interfaces/SongTempo';
@@ -21,15 +15,34 @@ import TimeMood from './components/TimeMood';
 import Authenticator from './components/Authenticator';
 import ArtistPopFol from './components/ArtistPopFol';
 import { Artists } from './interfaces/Artists';
-
-
-// import { SpotifyAPI } from './components/SpotifyAPI';
+import { TokenResponse } from './interfaces/TokenResponse';
+import { useCookies } from 'react-cookie';
 
 function App() {
 
-  // const [token, setToken, removeToken] = useCookies(['spot_insight_token']);
-  const [token, setToken, removeToken] = useCookies(['access_token']);
-  const [accessToken, setAccessToken] = useState("")
+  const [cookies, setCookies] = useCookies(['access_token', 'refresh_token'])
+
+
+  // const currentToken = {
+  //   get access_token() { return localStorage.getItem('access_token') || null; },
+  //   get refresh_token() { return localStorage.getItem('refresh_token') || null; },
+  //   get expires_in() { return localStorage.getItem('refresh_in') || null },
+  //   get expires() { return localStorage.getItem('expires') || null },
+  
+  //   save: function (response: TokenResponse) {
+  //     const { access_token, refresh_token, expires_in } : {access_token : string, refresh_token : string, expires_in: number} = response;
+  //     localStorage.setItem('access_token', access_token);
+  //     localStorage.setItem('refresh_token', refresh_token);
+  //     localStorage.setItem('expires_in', expires_in.toString());
+
+  //     setIsLoggedIn(true);
+  
+  //     const now = new Date();
+  //     const expiry = new Date(now.getTime() + (expires_in * 1000));
+  //     localStorage.setItem('expires', expiry.toDateString());
+  //   }
+  // };
+
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [tracks, setTracks] = useState<RecentTracks>(
     {
@@ -56,38 +69,87 @@ function App() {
   const [artistsWeek, setArtistsWeek] = useState<ArtistTop>(defaultArtistTop);
   const [artistsMonth, setArtistsMonth] = useState<ArtistTop>(defaultArtistTop);
   const [artistsYear, setArtistsYear] = useState<ArtistTop>(defaultArtistTop);
-  const [api, setApi] = useState<SpotifyAPI>(new SpotifyAPI(accessToken));
+  // const [api, setApi] = useState<SpotifyAPI>(new SpotifyAPI(currentToken.access_token||""));
+  const [api, setApi] = useState<SpotifyAPI>(new SpotifyAPI(cookies.access_token || ""));
 
 
   useEffect(() => {
-    getAccessToken();
-  }, []);
-
-  
-  useEffect(() => {
-    if(accessToken){
-      // initialise();
-      if(api!==null){
-        initialise();
-      }
-
-    }
-  }, [api]);
-
-  const initialise = async () =>{
-    await getArtists();
-    await getRecents();
-  }
-  function getAccessToken(){
-    try{
-      if(token.access_token===undefined) throw Error;
-      setAccessToken(token.access_token);
-      setApi(new SpotifyAPI(token.access_token))
+    console.log("Outside")
+    if(cookies.access_token!=undefined){
+      console.log("Inside")
+      setApi(new SpotifyAPI(cookies.access_token));
       setIsLoggedIn(true);
-    }catch(e){
-      setIsLoggedIn(false)
     }
-  }
+  }, [cookies])
+
+  // useEffect(() => {
+  //   const urlParams = new URLSearchParams(window.location.search);
+  //   const code = urlParams.get('code');
+
+  //   if(code&&currentToken.access_token == undefined){
+  //     const getLocalToken = async () => {
+  //       const token = await getToken(code);
+  //       console.log(token);
+  //       const expirationDate = new Date();
+  //       expirationDate.setTime(expirationDate.getTime() + 60 * 60 * 1000); // 1 hour in milliseconds
+  //       currentToken.save(token);
+  //       const url = new URL(window.location.href);
+  //       url.searchParams.delete("code");
+      
+  //       const updatedUrl = url.search ? url.href : url.href.replace('?', '');
+  //       window.history.replaceState({}, document.title, updatedUrl);
+  //     }
+  //     getLocalToken();
+  //   }
+
+  //   getAccessToken();
+  // }, []);
+
+  // useEffect(() => {
+  //   if(currentToken.access_token && api!==null){
+  //     const initialise = async () =>{
+  //       await getArtists();
+  //       await getRecents();
+  //     }
+  //     initialise();
+  //   }
+  // }, [api]);
+
+
+
+  // const getToken = async (code:any) => {
+
+  //   let codeVerifier = localStorage.getItem('code_verifier');
+  //   const tokenEndpoint = "https://accounts.spotify.com/api/token";
+
+  //   const response = await fetch(tokenEndpoint, {
+      
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/x-www-form-urlencoded',
+  //     },
+
+  //     body: new URLSearchParams({
+  //       client_id: process.env.REACT_APP_CLIENT_ID || "",
+  //       grant_type: 'authorization_code',
+  //       code: code,
+  //       redirect_uri: process.env.REACT_APP_REDIRECT_URI || "",
+  //       code_verifier: codeVerifier || "",
+  //     }).toString(),
+  //   });
+  //   return response.json();
+  // }
+
+  // function getAccessToken(){
+  //   try{
+  //     if(!currentToken.access_token) throw Error;
+  //     setApi(new SpotifyAPI(currentToken.access_token || ""))
+  //     setIsLoggedIn(true);
+  //   }catch(e){
+  //     console.log(currentToken)
+  //     setIsLoggedIn(false)
+  //   }
+  // }
 
   async function getArtists(){
     const newWeek = await api.getTopArtists("short_term");
@@ -96,18 +158,7 @@ function App() {
     setArtistsWeek(newWeek);
     setArtistsMonth(newMonth);
     setArtistsYear(newYear);
-    console.log(newWeek);
   }
-
-
-  async function getAvgValence(){
-    var totalValence : number = 0;
-
-    for(var i = 0; i< audioFeatures.length;i++){
-      totalValence += audioFeatures[i].valence;
-    }
-  }
-
 
   function getTempoValues(audioFeatures:AudioFeatures[], tracks: RecentTracks): Features {
     var totalTempo = audioFeatures[0].tempo;
@@ -133,7 +184,6 @@ function App() {
         highestTempo.tpHist = currentSong
       }
 
- 
     }
 
     return {
@@ -143,7 +193,6 @@ function App() {
     }
   }
   
-
   async function getRecents(){
     const newTracks: RecentTracks = await api.getRecents(50);
 
@@ -170,12 +219,6 @@ function App() {
     setArtistsWeek(prev => ({...prev, items:newArtistWeek}))
     setArtistsMonth(prev => ({...prev, items:newArtistMonth}))
     setArtistsYear(prev => ({...prev, items:newArtistYear}))
-
-    console.log(newTracks);
-    console.log(newAf);
-    console.log(newArtistsRecent);
-    
-
   }
 
   const getTopArtistIds = (tracks:ArtistTop) =>{
@@ -196,7 +239,6 @@ function App() {
         </button>
         <button onClick={getArtists}>Get Artists</button>
         <button onClick={getRecents}>Get Recent</button>
-        {/* <button onClick={getAvgValence}>Get Valence</button> */}
         <div className='flex flex-col '>
           <div className = "my-72">
             <Tempo 
