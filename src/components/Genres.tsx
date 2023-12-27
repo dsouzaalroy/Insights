@@ -82,7 +82,7 @@ function Genres({week, month, year}:{week:ArtistTop, month: ArtistTop, year: Art
             <div className="flex flex-col justify-center">
                 <div className="flex justify-center gap-5">
                     <button
-                    className={`${buttonState === "short" ? buttonSelected : buttonDeselected} `}
+                    className={`${buttonState === "short" ? buttonSelected : buttonDeselected}`}
                     onClick={() => handleButtonClick("short")}
                     >
                     Short Term
