@@ -19,20 +19,12 @@ function Genres({week, month, year}:{week:ArtistTop, month: ArtistTop, year: Art
 
 
     useEffect(() =>{
-        // if(api !=null){
         if(week!==undefined){
-            // setArtistWeek(calculateTopGenre(week));
-            // setartistsMonth(calculateTopGenre(month));
-            // setArtistYear(calculateTopGenre(year));
             handleButtonClick("short");
         }
         
     },[week, month, year])
 
-    const fetchData = async (length:string) =>{
-        // const newArtWeek = await api.getTopArtists(length, 50);
-        // return calculateTopGenre(newArtWeek);
-    }
     const calculateTopGenre = (artists:ArtistTop)=>{
         const map:Map<string,number> = new Map();
         for(let i =0; i< artists.items.length;i++){
@@ -88,7 +80,6 @@ function Genres({week, month, year}:{week:ArtistTop, month: ArtistTop, year: Art
             Genre Distribution
             </header>
             <div className="flex flex-col justify-center">
-
                 <div className="flex justify-center gap-5">
                     <button
                     className={`${buttonState === "short" ? buttonSelected : buttonDeselected} `}

@@ -136,6 +136,8 @@ function BasePage() {
     return artists;
   }
 
+  const childStyling = "my-72 snap-center";
+
   
   return (
     <div className="App">
@@ -144,21 +146,21 @@ function BasePage() {
         </button>
         <button onClick={getArtists}>Get Artists</button>
         <button onClick={getRecents}>Get Recent</button>
-        <div className='flex flex-col '>
-          <div className = "my-72">
+        <div className='flex flex-col h-screen overflow-y-auto snap-y snap-mandatory'>
+          <div className = {childStyling}>
             <Tempo 
               highest={tempos.highest}
               average={tempos.average}
               lowest={tempos.lowest}
             />
           </div>
-          <div className = "my-72">
+          <div className = {childStyling}>
             <Genres week={artistsWeek} month={artistsMonth} year={artistsYear}/>
           </div>
-          <div className = "my-72">
+          <div className = {childStyling}>
             <TimeMood tracks={tracks} audioFeatures ={audioFeatures}/>
           </div>
-          <div className = "my-72">
+          <div className = {childStyling}>
             <ArtistPopFol 
             week = {artistsWeek.items}
             month = {artistsMonth.items}
