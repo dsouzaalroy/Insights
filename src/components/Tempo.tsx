@@ -59,7 +59,6 @@ function Tempo({average, highest, lowest}: Features){
                                 </div>
                             </a>
                         </div>
-                        {/* <div className="p-2">Lowest BPM song</div> */}
                         <div className="flex flex-col pb-2">
                             <a href={lowest?.tpHist.track.external_urls.spotify} target='_blank' rel="noreferrer" className="flex flex-row justify-between" >
                                 <div className="flex flex-col gap-0">

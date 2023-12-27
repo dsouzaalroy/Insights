@@ -99,9 +99,6 @@ function Genres({week, month, year}:{week:ArtistTop, month: ArtistTop, year: Art
                     >
                     Long Term
                     </button>
-                    
-                </div>
-                <div className="flex justify-center mt-10">
                 </div>
             </div>
             <BarChart num={chartNum} name={chartName}></BarChart>
