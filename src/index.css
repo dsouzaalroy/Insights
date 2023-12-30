@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 @import url('https://fonts.googleapis.com/css2?family=Raleway&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap');
 
 body {
   margin: 0;
@@ -19,4 +20,8 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+.font-custom {
+  font-family: 'Montserrat', sans-serif;
 }

@@ -7,10 +7,12 @@ function LoginPage() {
 
     return(
         <div className="">
-            <div className="grid gap-5 grid-cols-1 grid-rows-3 ml-20">
-                <div>insights</div>
-                <div>Please login with Spotify to view insights into you listening habits</div>
-                <Authenticator/>
+            <div className="h-screen flex items-center ml-5 lg:ml-20">
+                <div className="grid grid-row-3 gap-2 mb-7 lg:mb-15">
+                    <div className="text-3xl font-custom lg:text-5xl">Insights</div>
+                    <div className="text-sm-3 lg:text-sm mb-5 ">Enhance your music experience by logging in with Spotify to view personalised insights into your unique listening habits.</div>
+                    <Authenticator/>
+                </div>
             </div>
             {/* <div>
             </div> */}

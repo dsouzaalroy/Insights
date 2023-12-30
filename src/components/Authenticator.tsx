@@ -20,8 +20,8 @@ function Authenticator(){
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const code = urlParams.get('code');
-    
-    if(code && cookies.access_token == undefined){
+
+    if(code && cookies.access_token === undefined){
       const getLocalToken = async () => {
         const token = await generateToken(code);
         currentToken.save(token);
@@ -34,7 +34,7 @@ function Authenticator(){
       getLocalToken();
     }
 
-  });
+  }, []);
 
   const generateToken = async (code:string) => {
 
@@ -100,9 +100,13 @@ function Authenticator(){
         .replace(/\//g, '_');
     }
 
+    const defaultButtonStyling = "rounded-full px-4 py-2 text-sm-4 lg:text-base"
+    const buttonSelected = "bg-green text-white hover:-translate-y-1 hover:scale-110 hover:bg-dark-green " + defaultButtonStyling;
+    const buttonDeselected = "bg-light-grey text-grey-1 hover:-translate-y-1 hover:scale-110 " + defaultButtonStyling;
+
       return(
         <div>
-            <button onClick={() => requestAuth()}>Log in</button>
+            <button className={buttonSelected} onClick={async () => await requestAuth()}>Log in</button>
         </div>
       )
 

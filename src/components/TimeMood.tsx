@@ -28,7 +28,7 @@ function TimeMood({tracks, audioFeatures}:{tracks:RecentTracks, audioFeatures: A
     }
 
     return (
-        <div className="flex flex-col">
+        <div className="flex flex-col mt-32">
             <div className = "flex flex-col justify-center items-center">
                 <header className="text-2xl font-bold">
                     Time to Mood

@@ -32,7 +32,7 @@ function BasePage() {
       total:null,
     }
   );
-  const [audioFeatures, setAudioFeatures] = useState<AudioFeatures[]>([]);  // const [api, setApi] = useState({});
+  const [audioFeatures, setAudioFeatures] = useState<AudioFeatures[]>([]);
   const [tempos, setTempos] = useState<Features>({
     average:0,
     highest:null,
@@ -59,6 +59,7 @@ function BasePage() {
 
   useEffect(() => {
     const loadData = async () => {
+      console.log(cookies.access_token);
       if(!isLoaded && cookies.access_token){
         await getArtists();
         // await getRecents();
@@ -67,7 +68,7 @@ function BasePage() {
     }
     loadData();
 
-  }, [isLoggedIn])
+  }, [isLoggedIn, cookies])
 
   useEffect(() => {
       // console.log("Artists Week:", artistsWeek);
@@ -77,10 +78,11 @@ function BasePage() {
       if(artistsYear.total!== 0 && artistsRecent.length===0){
         console.log("Artists data populated")
         await getRecents();
+        setIsLoaded(true);
       }
     }
     getRecentsLocal();
-    setIsLoaded(true);
+
 
   }, [artistsYear])
 
