@@ -21,17 +21,6 @@ function Authenticator(){
     const urlParams = new URLSearchParams(window.location.search);
     const code = urlParams.get('code');
     
-    // TODO Add refresh token functionality
-    // if(cookies.refresh_token != undefined && cookies.access_token == undefined){
-    //    console.log("Inside")
-    //   const getLocalToken =async () => {
-    //     const token = await generateRefreshToken();
-    //     currentToken.save(token);
-    //     console.log(token)
-    //   }
-
-    //   getLocalToken();
-    // }
     if(code && cookies.access_token == undefined){
       const getLocalToken = async () => {
         const token = await generateToken(code);
@@ -45,40 +34,7 @@ function Authenticator(){
       getLocalToken();
     }
 
-    // getAccessToken();
   });
-
-
-  // function getAccessToken(){
-  //   try{
-  //     if(!currentToken.access_token) throw Error;
-  //     setApi(new SpotifyAPI(currentToken.access_token || ""))
-  //     setIsLoggedIn(true);
-  //   }catch(e){
-  //     console.log(currentToken)
-  //     setIsLoggedIn(false)
-  //   }
-  // }
-
-  // TODO Add refresh token functionality
-  // const generateRefreshToken = async () =>{
-
-  //   const response = await fetch(tokenEndpoint, {
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-Type': 'application/x-www-form-urlencoded',
-  //     },
-
-  //     body: new URLSearchParams({
-  //       grant_type: 'refresh_token',
-  //       refresh_token: cookies.refresh_token,
-  //       client_id: process.env.REACT_APP_CLIENT_ID || "",
-  //     }).toString(),
-  //   });
-
-  //   return response.json();
-  // }
-
 
   const generateToken = async (code:string) => {
 
@@ -102,10 +58,7 @@ function Authenticator(){
   }
 
     const requestAuth = async () =>{
-        const client_id = process.env.REACT_APP_CLIENT_ID || 'default_client_id'; 
-// Use apiKey and baseUrl in your code as needed
-
-        
+        const client_id = process.env.REACT_APP_CLIENT_ID || 'default_client_id';        
         var state = generateRandomString(16);
 
         const hashed = await sha256(codeVerifier)

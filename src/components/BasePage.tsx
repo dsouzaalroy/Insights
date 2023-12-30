@@ -63,7 +63,6 @@ function BasePage() {
         await getArtists();
         // await getRecents();
         console.log("Loading data")
-        setIsLoaded(true);
       }
     }
     loadData();
@@ -81,6 +80,7 @@ function BasePage() {
       }
     }
     getRecentsLocal();
+    setIsLoaded(true);
 
   }, [artistsYear])
 
