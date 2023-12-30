@@ -14,12 +14,14 @@ import { AudioFeatures } from '../interfaces/AudioFeatures';
 import { TPHistory } from '../interfaces/TrackPlayHistory';
 import { RecentTracks } from '../interfaces/RecentTracks';
 import { ArtistTop } from '../interfaces/ArtistTop';
+import LoginPage from './LoginPage';
 
 
 function BasePage() {
 
   const [cookies] = useCookies(['access_token', 'refresh_token'])
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
   const [tracks, setTracks] = useState<RecentTracks>(
     {
       cursors: null,
@@ -49,13 +51,38 @@ function BasePage() {
 
 
   useEffect(() => {
-    console.log("Outside")
     if(cookies.access_token!=undefined){
-      console.log("Inside")
       setApi(new SpotifyAPI(cookies.access_token));
       setIsLoggedIn(true);
     }
   }, [cookies])
+
+  useEffect(() => {
+    const loadData = async () => {
+      if(!isLoaded && cookies.access_token){
+        await getArtists();
+        // await getRecents();
+        console.log("Loading data")
+        setIsLoaded(true);
+      }
+    }
+    loadData();
+
+  }, [isLoggedIn])
+
+  useEffect(() => {
+      // console.log("Artists Week:", artistsWeek);
+      // console.log("Artists Month:", artistsMonth);
+      // console.log("Artists Year:", artistsYear);
+    const getRecentsLocal = async () => {
+      if(artistsYear.total!== 0 && artistsRecent.length===0){
+        console.log("Artists data populated")
+        await getRecents();
+      }
+    }
+    getRecentsLocal();
+
+  }, [artistsYear])
 
   async function getArtists(){
     const newWeek = await api.getTopArtists("short_term");
@@ -70,7 +97,6 @@ function BasePage() {
     var totalTempo = audioFeatures[0].tempo;
     var highestTempo: SongTempo = {tempo:audioFeatures[0].tempo, tpHist: tracks.items[0]};
     var lowestTempo: SongTempo = {tempo:audioFeatures[0].tempo, tpHist: tracks.items[0]};
-  
   
     for(var i = 1; i < audioFeatures.length; i++){
       const currentTempo: number = audioFeatures[i].tempo
@@ -109,15 +135,17 @@ function BasePage() {
       artists+=newTracks.items[i].track.artists[0].id;
       if(i!==newTracks.items.length-1)trackIds+=",";
       if(i!==newTracks.items.length-1)artists+=",";
-
     }
 
     const newAf: AudioFeatures[]  = await api.getAudioFeatures(trackIds)
     const tempos: Features = getTempoValues(newAf, newTracks);
     const newArtistsRecent = await api.getArtists(artists);
+    // The call to the artists endpoint is different to the top artists endpoint
+    // this gives us more information to work with.
     const newArtistWeek = await api.getArtists(getTopArtistIds(artistsWeek));
     const newArtistMonth = await api.getArtists(getTopArtistIds(artistsMonth));
     const newArtistYear = await api.getArtists(getTopArtistIds(artistsYear));
+
     setTracks(newTracks)
     setAudioFeatures(newAf);
     setTempos(tempos);
@@ -131,21 +159,23 @@ function BasePage() {
     let artists: string = "";
     for(let i=0; i< tracks.items.length;i++){
       artists+=tracks.items[i].id;
-      if(i!==tracks.items.length-1)artists+=",";
+      if(i!==tracks.items.length-1) artists+=",";
     }
     return artists;
   }
 
   const childStyling = "my-72 snap-center";
-
   
   return (
+    // If not logged in show login page
+    (!isLoggedIn) ? <LoginPage/> :
+    (!isLoaded) ? <div>Loading ...</div> :
     <div className="App">
-        <button style={{visibility:isLoggedIn ? 'hidden' : 'visible'}}>
+        {/* <button style={{visibility:isLoggedIn ? 'hidden' : 'visible'}}>
           <Authenticator/>
-        </button>
-        <button onClick={getArtists}>Get Artists</button>
-        <button onClick={getRecents}>Get Recent</button>
+        </button> */}
+        {/* <button onClick={getArtists}>Get Artists</button>
+        <button onClick={getRecents}>Get Recent</button> */}
         <div className='flex flex-col h-screen overflow-y-auto snap-y snap-mandatory'>
           <div className = {childStyling}>
             <Tempo 
