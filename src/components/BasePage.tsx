@@ -15,6 +15,7 @@ import { TPHistory } from '../interfaces/TrackPlayHistory';
 import { RecentTracks } from '../interfaces/RecentTracks';
 import { ArtistTop } from '../interfaces/ArtistTop';
 import LoginPage from './LoginPage';
+import Loading from './Loading';
 
 
 function BasePage() {
@@ -171,7 +172,7 @@ function BasePage() {
   return (
     // If not logged in show login page
     (!isLoggedIn) ? <LoginPage/> :
-    (!isLoaded) ? <div>Loading ...</div> :
+    (!isLoaded) ? <Loading/> :
     <div className="App">
         {/* <button style={{visibility:isLoggedIn ? 'hidden' : 'visible'}}>
           <Authenticator/>
