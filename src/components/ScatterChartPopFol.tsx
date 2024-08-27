@@ -12,7 +12,7 @@ Chart.register(PointElement,
 
 const ScatterChartPopFol = ({dataIn}:{dataIn:Artists[]}) => {
 
-  const [visible, setVisible] = useState<String>("invisble");
+  const [visible] = useState<String>("invisble");
   const [toolTipData, setTooltipData] = useState<TooltipData>({
     visible: false,
     position: {
@@ -177,7 +177,7 @@ const ScatterChartPopFol = ({dataIn}:{dataIn:Artists[]}) => {
         },
         border:{
           color: '#B3B3B3',
-          width:2,
+          width:1,
         },
         title:{
             display:true,
@@ -200,7 +200,7 @@ const ScatterChartPopFol = ({dataIn}:{dataIn:Artists[]}) => {
         tooltip: {
           enabled: false,
           position: 'nearest' as 'nearest',
-          external: externalToolTipHandler
+          external: externalToolTipHandler,
         },
     },
     layout:{
@@ -221,7 +221,8 @@ const ScatterChartPopFol = ({dataIn}:{dataIn:Artists[]}) => {
     position: "absolute",
     left: toolTipData.position.x,
     top: toolTipData.position.y,
-    backgroundColor: "#E5E4E2"
+    backgroundColor: "#191414",
+    borderWidth:0,
 
   }
   const render = (
@@ -236,9 +237,6 @@ const ScatterChartPopFol = ({dataIn}:{dataIn:Artists[]}) => {
               <div className ="">Popularity: {dataIn[toolTipData?.index]?.popularity}</div>
             </div>
         </div>
-
-
-
       </div>
     </div>
   )
@@ -246,7 +244,6 @@ const ScatterChartPopFol = ({dataIn}:{dataIn:Artists[]}) => {
   return (
     // Only render if data is not 0
     dataIn.length > 0 ? render:<div></div>
-    
   );
 };
 

@@ -69,7 +69,7 @@ function Genres({ week, month, year }: { week: ArtistTop, month: ArtistTop, year
     const buttonDeselected = "bg-light-grey text-grey-1 hover:-translate-y-1 hover:scale-110 " + defaultButtonStyling;
 
     return (
-        <div>
+        <div className="mt-32">
             <header className="flex text-2xl font-bold justify-center pb-10">
                 Genre Distribution
             </header>
@@ -77,20 +77,17 @@ function Genres({ week, month, year }: { week: ArtistTop, month: ArtistTop, year
                 <div className="flex justify-center gap-5">
                     <button
                         className={`${buttonState === "short" ? buttonSelected : buttonDeselected}`}
-                        onClick={() => handleButtonClick("short")}
-                    >
+                        onClick={() => handleButtonClick("short")}>
                         Short Term
                     </button>
                     <button
                         className={`${buttonState === "med" ? buttonSelected : buttonDeselected}`}
-                        onClick={() => handleButtonClick("med")}
-                    >
+                        onClick={() => handleButtonClick("med")}>
                         Medium Term
                     </button>
                     <button
                         className={`${buttonState === "long" ? buttonSelected : buttonDeselected}`}
-                        onClick={() => handleButtonClick("long")}
-                    >
+                        onClick={() => handleButtonClick("long")}>
                         Long Term
                     </button>
                 </div>
